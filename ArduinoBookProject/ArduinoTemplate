@@ -1,0 +1,104 @@
+#start by importing classes
+from pyfirmata import Arduino
+
+#before executing any method, setup arduino board
+port = '/dev/cu.usbmodem621' # port location depends on comp
+
+
+#now we engage  Arduino with pyfirmata
+board = Arduino(port)
+
+#synchronization between python and arduino takes time, use sleep
+
+from time import sleep
+sleep(1)
+#200 miliseconds would be sleep(0.2)
+
+#at this point, synchronization is complete
+# sample dictionary object for any arduino board
+# arduino = {
+#           'digital' : tuple(x for x in range(14),
+#           'analog'  : tuple(x for x in range(8),
+#           'pwm'     : (3, 5, 6, 9, 10, 11),
+#           'use_ports' : True,
+#           'disabled' : (0, 1) # Rx, Tx, Crystal
+# }
+# customize your board according to yoru board layout
+
+# then modify the layout of the board using the setup_layout() method
+#board.setup_layout(nano) for example if u had a nano
+
+#next step is to configure arduino pins after board synchronized
+#Assigning modes to digital pins, first import classes
+from pyfirmata import Arduino
+from pyfirmata import INPUT, OUTPUT, PWM
+
+board.digital[pinNumber].mode = OUTPUT
+board.analog[pinNumber].mode = INPUT
+#the mode method is performed on the bariable assigned to the configured
+#arduino board using the digital[] and anlog[] array index assignment
+
+#the pyfirmata library also supports PWM and SERVO mode
+# PWM mode is used to get analog results from digital pins
+# SERVO mode helps a digital pin to set the angle of the shaft between 0 - 180 degree
+from pyfirmata import SERVO, PWM
+board.digital[pinNumber].mode = PWM
+board.digital[pinNumber].mode = SERVO
+
+#PWM can be used with analogWrite(), use 0-255 as values
+# analogWrite(13, 127) , will generate duty cycle on pin 13, half of 5v(127)
+
+#Assigning pin modes
+# its useful to assign pins to variables to change its mode later on
+# in the code use the get_pin(pin_def) method
+
+from pyfirmata import Arduino
+port = '/dev/cu.usbmodem621'
+board = Arduino(port)
+ledPin = board.get_pin('d:13:o')
+#ledPin is getting pin d for digital, 13 for pin number, o for output
+#the get_pin() method lets you assign pin modes using the
+#pin_def string parameter 'd:13;o', which is pin type, pin number, and pin mode
+# 3 modes are supported, i = input, o = output, p = PWM
+
+#Working with pins: 2 different types of methods are supported:
+# reporting methods and I/O operation methods
+
+#analog signals can get buffer overflow, using enable_reporting() and disable_reporting()
+#use iterator in main to read and handle data over serial port
+from pyfirmata import Arduino, util
+it = util.Iterator(board)
+it.start()
+
+#For manual operation, we can start monitoring pins now
+#use write() and read()
+
+#example 1 using 0 or 1 boolean
+board.digital[pin].mode = OUTPUT
+board.digital[pin].write(1)
+
+#example 2 by assigning pin mode
+ledPin = board.get_pin('d:10:o')
+ledPin.write(1)
+
+#example 3 for PWM, length of duty cycle using float value 0-1.0
+board.digital[pin].mode = PWM
+board.digital[pin].write(0.5)
+#or
+pwmPin = board.get_pin('a:13:p')
+pwmPin.write(0.5)
+
+#for servo mode, use the value of degrees 0-180
+board.digital[pin].mode = SERVO
+board.digital[pin].write(180)
+
+# read() method
+# for digital HIGH LOW translate to 1 and 0 in python
+# for analog, 0v - 5v on arduino is 0-1023 adc value
+# analog translate into python 0v - 5v is float value 0 - 1.0
+# example, for a value of 1v, arduino recieves 204, pyfirmata receives 0.2
+
+#Other functions:
+#servo_config(pin, min_pulse = 544, max_pulse = 2400, angle = 0)
+#pass_time(seconds) like the python sleep
+#exit(), use this when done to allow other program serial usage
