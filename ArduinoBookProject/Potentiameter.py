@@ -2,7 +2,7 @@ from pyfirmata import Arduino, util
 from time import sleep
 import os
 
-port = # edit
+port = '/dev/cu.usbmodem621'
 board = Arduino(port)
 sleep(5)
 
@@ -16,7 +16,7 @@ try:
         potentiameter = analog0.read()
         print potentiameter
 
-except KeyboardInterrupt
+except KeyboardInterrupt:
     board.exit()
     os._exit()
 
