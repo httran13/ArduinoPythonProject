@@ -14,6 +14,7 @@ analog0 = board.get_pin('a:0:i') #analog:pin:mode
 try:
     while True:
         potentiameter = analog0.read()
+        sleep(2)
         print potentiameter
 
 except KeyboardInterrupt:

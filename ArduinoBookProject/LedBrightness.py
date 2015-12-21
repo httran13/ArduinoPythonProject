@@ -6,14 +6,15 @@ port = '/dev/cu.usbmodem621'
 board = Arduino(port)
 sleep(5)
 
-pin = 13
+pin = 11
 board.digital[pin].mode = PWM
 
 for i in range (0, 99):
     r = random.randint(1,100)
 
-    ledPin.write(r /100.00)
+    board.digital[pin].write(r/100.00)
     sleep(0.1)
-    ledPin.write(0)
-    board.exit()
+
+board.digital[pin].write(0)
+board.exit()
 
